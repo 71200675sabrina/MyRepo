@@ -6,6 +6,7 @@ import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.example.githubapp.databinding.UserDetailBinding
@@ -56,15 +57,16 @@ class DetailUserActivity : AppCompatActivity() {
 
         supportActionBar?.elevation = 0f
 
+        viewModel.detailUser.observe(this){
+                detailUser -> setDetailUser(detailUser)
+                showLoading(false)
+        }
+
         if (username != null){
             showLoading(true)
             viewModel.getUserDetail(username)
-            showLoading(false)
         }
 
-        viewModel.detailUser.observe(this){
-            detailUser -> setDetailUser(detailUser)
-        }
 
         viewModel.isLoading.observe(this){
             showLoading(it)
@@ -79,8 +81,6 @@ class DetailUserActivity : AppCompatActivity() {
         binding.tvUsername.text = Data.name
         binding.tvFollowers.text = Data.followers.toString()
         binding.tvFollowing.text = Data.following.toString()
-
-
     }
 
     private fun showLoading(isLoading: Boolean){
@@ -90,7 +90,7 @@ class DetailUserActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
     }
-
+    
 }
 
 

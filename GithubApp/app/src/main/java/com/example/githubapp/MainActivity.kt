@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
@@ -81,9 +80,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLoading(isLoading: Boolean){
         if (isLoading) {
-            binding.progressBar.visibility = View.VISIBLE
+            binding.loadRv.visibility = View.VISIBLE
         } else {
-            binding.progressBar.visibility = View.GONE
+            binding.loadRv.visibility = View.GONE
         }
     }
 
