@@ -1,14 +1,15 @@
 package com.example.githubapp
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.app.Application
+import androidx.lifecycle.*
+import com.example.githubapp.database.UserGithub
 
-class DetailViewModel: ViewModel(){
+
+class DetailViewModel(application: Application): AndroidViewModel(application){
 
     private val _detailUser = MutableLiveData<DetailUserResponse>()
     val detailUser: LiveData<DetailUserResponse> = _detailUser
@@ -22,17 +23,23 @@ class DetailViewModel: ViewModel(){
     private val _following = MutableLiveData<List<ItemsItem>>()
     val following: LiveData<List<ItemsItem>> = _following
 
+    private val userRepository: UserRepository = UserRepository(application)
 
 
     companion object{
         const val TAG ="DetailViewModel"
     }
 
-    init {
-        getUserDetail(query = String())
+
+    fun insertData(user: UserGithub){
+        userRepository.insert(user)
     }
 
-    fun getUserDetail(query: String){
+    init {
+        getUserDetail()
+    }
+
+    fun getUserDetail(query: String = ""){
         _isLoading.value = true
         val client = ApiConfig.getApiService().getDetailUser(query)
         client.enqueue(object : Callback<DetailUserResponse> {

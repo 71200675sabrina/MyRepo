@@ -50,30 +50,19 @@ class DetailFragment : Fragment() {
         }
 
         if (position == 1) {
-            showLoading(true)
             username?.let { detailViewModel.getFollowers(it) }
             detailViewModel.followers.observe(viewLifecycleOwner) {
                 setUserFollow(it)
-                showLoading(false)
             }
         } else {
-            showLoading(true)
             username?.let { detailViewModel.getFollowing(it) }
             detailViewModel.following.observe(viewLifecycleOwner) {
                 setUserFollow(it)
-                showLoading(false)
             }
         }
 
     }
 
-    private fun showLoading(isLoading: Boolean) {
-        if (isLoading) {
-            binding.progressLoad.visibility = View.VISIBLE
-        } else {
-            binding.progressLoad.visibility = View.GONE
-        }
-    }
 
     private fun setUserFollow(listFollowing: List<ItemsItem>) {
         binding.apply {

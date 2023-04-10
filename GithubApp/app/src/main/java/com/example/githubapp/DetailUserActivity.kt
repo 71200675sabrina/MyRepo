@@ -2,16 +2,19 @@ package com.example.githubapp
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.example.githubapp.database.UserGithub
 import com.example.githubapp.databinding.UserDetailBinding
+import com.example.githubapp.favorite.FavoriteViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+
 
 class DetailUserActivity : AppCompatActivity() {
 
@@ -28,17 +31,19 @@ class DetailUserActivity : AppCompatActivity() {
         )
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val factory : ViewModelProvider.Factory = ViewModelProvider.NewInstanceFactory()
+        viewModel = ViewModelProvider(this, factory).get(DetailViewModel::class.java)
 
         val username = intent.getStringExtra(USER_KEY)
         val bundle = Bundle()
         bundle.putString(USER_KEY, username)
 
-        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(DetailViewModel::class.java)
 
         val loginUser = intent.getStringExtra(USER_KEY)
         binding.tvName.text = loginUser
@@ -67,7 +72,6 @@ class DetailUserActivity : AppCompatActivity() {
             viewModel.getUserDetail(username)
         }
 
-
         viewModel.isLoading.observe(this){
             showLoading(it)
         }
@@ -81,8 +85,13 @@ class DetailUserActivity : AppCompatActivity() {
         binding.tvUsername.text = Data.name
         binding.tvFollowers.text = Data.followers.toString()
         binding.tvFollowing.text = Data.following.toString()
-    }
 
+        binding.btnFav?.setOnClickListener {
+            val userRoom = UserGithub(Data.login, Data.name, Data.followers.toString(), Data.following.toString())
+            viewModel.insertData(userRoom)
+            Toast.makeText(this,"User Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
+        }
+    }
     private fun showLoading(isLoading: Boolean){
         if (isLoading) {
             binding.progressBar.visibility = View.VISIBLE
@@ -90,7 +99,7 @@ class DetailUserActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
     }
-    
+
 }
 
 

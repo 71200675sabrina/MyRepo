@@ -6,4 +6,6 @@
     <string name="textfollowing">Following</string>
     <string name="tab_text_1">Followers</string>
     <string name="tab_text_2">Following</string>
+    <string name="favorite">favorite</string>
+    <string name="darkmode">Dark Mode</string>
 </resources>
