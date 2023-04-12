@@ -3,6 +3,7 @@ package com.example.githubapp.favorite
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.room.Query
 import com.example.githubapp.UserRepository
 import com.example.githubapp.database.UserGithub
 
@@ -13,5 +14,6 @@ class FavoriteViewModel(application: Application): ViewModel() {
     fun deleteUser(username: String){
         userRepository.delete(username)
     }
+
 
 }

@@ -3,8 +3,10 @@ package com.example.githubapp
 
 import android.app.SearchManager
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -12,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.databinding.ActivityMainBinding
+import com.example.githubapp.favorite.FavoriteActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         binding.rvUser.addItemDecoration(itemDecoration)
 
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -70,7 +72,21 @@ class MainActivity : AppCompatActivity() {
             }
         })
         return true
+
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+         when (item.itemId){
+            R.id.it_favorite -> {
+                val intent = Intent (this, FavoriteActivity::class.java)
+                startActivity(intent)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
 
 
     private fun setListData(listUser : List<ItemsItem>){

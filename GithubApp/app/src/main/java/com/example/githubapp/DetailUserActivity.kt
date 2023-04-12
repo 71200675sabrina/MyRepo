@@ -2,10 +2,12 @@ package com.example.githubapp
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
@@ -14,15 +16,18 @@ import com.example.githubapp.databinding.UserDetailBinding
 import com.example.githubapp.favorite.FavoriteViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import com.example.githubapp.database.UserDao
 
 
 class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: UserDetailBinding
     private lateinit var viewModel: DetailViewModel
+    private val favoriteViewModel by viewModels<FavoriteViewModel>() { ViewModelFactory.getInstance(application) }
 
     companion object{
         const val USER_KEY = "key_data"
+        const val Extra_USER = "extra_USER"
 
         @StringRes
         private val TAB_TITLES = intArrayOf(
@@ -37,8 +42,7 @@ class DetailUserActivity : AppCompatActivity() {
         binding = UserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val factory : ViewModelProvider.Factory = ViewModelProvider.NewInstanceFactory()
-        viewModel = ViewModelProvider(this, factory).get(DetailViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
 
         val username = intent.getStringExtra(USER_KEY)
         val bundle = Bundle()
@@ -75,6 +79,7 @@ class DetailUserActivity : AppCompatActivity() {
         viewModel.isLoading.observe(this){
             showLoading(it)
         }
+
     }
 
     private fun setDetailUser(Data: DetailUserResponse) {
@@ -87,9 +92,17 @@ class DetailUserActivity : AppCompatActivity() {
         binding.tvFollowing.text = Data.following.toString()
 
         binding.btnFav?.setOnClickListener {
-            val userRoom = UserGithub(Data.login, Data.name, Data.followers.toString(), Data.following.toString())
-            viewModel.insertData(userRoom)
-            Toast.makeText(this,"User Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
+            val userRoom = UserGithub(Data.login, Data.name, Data.avatarUrl, Data.followingUrl, Data.followersUrl)
+            val existingUser = viewModel.checkData(Data.login)
+            if (existingUser == null ){
+                viewModel.insertData(userRoom)
+                Toast.makeText(this, "User Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
+                (binding.btnFav as ImageButton). setImageResource(R.drawable.td_favorite)
+            } else {
+                viewModel.deleteData(Data.login)
+                Toast.makeText(this, "User Dihapus dari Favorite", Toast.LENGTH_SHORT).show()
+                (binding.btnFav as ImageButton). setImageResource(R.drawable.favorite_border)
+            }
         }
     }
     private fun showLoading(isLoading: Boolean){

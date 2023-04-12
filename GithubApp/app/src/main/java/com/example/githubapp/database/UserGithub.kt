@@ -10,19 +10,21 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "user")
 @Parcelize
 data class UserGithub (
-    @ColumnInfo(name = "name")
-    var name: String? = null,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id")
+    var id: Int = 0,
 
     @ColumnInfo(name = "username")
     var username: String? = null,
 
-    @ColumnInfo(name = "avatar")
-    var avatar: String? = null,
+    @ColumnInfo(name = "avatarUrl")
+    var avatarUrl: String? = null,
 
-    @ColumnInfo(name = "url")
-    var url: String? = null,
+    @ColumnInfo(name = "followingUrl")
+    var followingUrl: String? = null,
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    var id: Int = 0
+    @ColumnInfo(name = "followersUrl")
+    var followersUrl: String? = null,
+
+
 ): Parcelable

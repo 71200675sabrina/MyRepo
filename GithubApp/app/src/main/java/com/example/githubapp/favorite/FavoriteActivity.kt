@@ -15,11 +15,10 @@ import com.example.githubapp.ViewModelFactory
 class FavoriteActivity : AppCompatActivity() {
 
     private lateinit var adapter: FavoriteAdapter
-    private lateinit var listUser: List<UserGithub>
+    private lateinit var listFavorite: List<UserGithub>
     private lateinit var binding: ActivityFavoriteBinding
 
-    val factory: ViewModelFactory = ViewModelFactory.getInstance(application)
-    val favoriteViewModel: FavoriteViewModel by  viewModels { factory }
+   private val favoriteViewModel by viewModels<FavoriteViewModel>() { ViewModelFactory.getInstance(application) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +32,7 @@ class FavoriteActivity : AppCompatActivity() {
         favoriteViewModel.getUser().observe(this){
             if (it != null){
                 setLoading()
-                listUser = it
+                listFavorite = it
                 adapter.setListUsers(it)
             }
         }
@@ -46,7 +45,7 @@ class FavoriteActivity : AppCompatActivity() {
             ): Boolean = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                listUser[viewHolder.adapterPosition].username?.let { favoriteViewModel.deleteUser(it)}
+                listFavorite[viewHolder.adapterPosition].username?.let { favoriteViewModel.deleteUser(it)}
                 }
 
         }

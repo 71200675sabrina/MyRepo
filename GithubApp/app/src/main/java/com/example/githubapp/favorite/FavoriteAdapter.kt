@@ -43,7 +43,7 @@ class FavoriteAdapter: RecyclerView.Adapter<FavoriteAdapter.ViewHolder>() {
         fun bind(users: UserGithub) {
             with(binding) {
                 Glide.with(itemView.context)
-                    .load(users.avatar)
+                    .load(users.avatarUrl)
                     .apply(RequestOptions().override(60, 60))
                     .into(ivUser)
                 tvUser.text = users.username

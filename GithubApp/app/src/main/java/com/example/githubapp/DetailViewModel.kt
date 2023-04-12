@@ -35,6 +35,14 @@ class DetailViewModel(application: Application): AndroidViewModel(application){
         userRepository.insert(user)
     }
 
+    fun deleteData(username: String){
+        userRepository.delete(username)
+    }
+
+    fun checkData(username: String){
+        userRepository.getDataByUsername(username)
+    }
+
     init {
         getUserDetail()
     }
