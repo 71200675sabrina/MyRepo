@@ -6,7 +6,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.app.Application
 import androidx.lifecycle.*
-import com.example.githubapp.database.UserGithub
+
 
 
 class DetailViewModel(application: Application): AndroidViewModel(application){
