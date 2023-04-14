@@ -8,4 +8,5 @@
     <string name="tab_text_2">Following</string>
     <string name="favorite">favorite</string>
     <string name="darkmode">Dark Mode</string>
+    <string name="tombol_favorite">Button Clicked</string>
 </resources>

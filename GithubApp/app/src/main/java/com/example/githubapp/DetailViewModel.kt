@@ -23,25 +23,12 @@ class DetailViewModel(application: Application): AndroidViewModel(application){
     private val _following = MutableLiveData<List<ItemsItem>>()
     val following: LiveData<List<ItemsItem>> = _following
 
-    private val userRepository: UserRepository = UserRepository(application)
 
 
     companion object{
         const val TAG ="DetailViewModel"
     }
 
-
-    fun insertData(user: UserGithub){
-        userRepository.insert(user)
-    }
-
-    fun deleteData(username: String){
-        userRepository.delete(username)
-    }
-
-    fun checkData(username: String){
-        userRepository.getDataByUsername(username)
-    }
 
     init {
         getUserDetail()

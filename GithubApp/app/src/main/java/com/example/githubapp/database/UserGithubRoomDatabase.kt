@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [UserGithub::class], version = 1)
+@Database(entities = [UserGithub::class], version = 2)
 abstract class UserGithubRoomDatabase: RoomDatabase() {
     abstract fun userDao(): UserDao
 

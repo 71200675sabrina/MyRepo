@@ -1,68 +1,50 @@
 package com.example.githubapp.favorite
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.githubapp.database.UserGithub
 import com.example.githubapp.databinding.ActivityFavoriteBinding
 import androidx.activity.viewModels
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.githubapp.UserAdapter
+import com.example.githubapp.Users
 import com.example.githubapp.ViewModelFactory
 
 
 class FavoriteActivity : AppCompatActivity() {
 
-    private lateinit var adapter: FavoriteAdapter
-    private lateinit var listFavorite: List<UserGithub>
     private lateinit var binding: ActivityFavoriteBinding
-
-   private val favoriteViewModel by viewModels<FavoriteViewModel>() { ViewModelFactory.getInstance(application) }
+    private val favoriteViewModel by viewModels<FavoriteViewModel>() { ViewModelFactory.getInstance(application) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityFavoriteBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        initializationAdapter()
-        setData()
-    }
 
-    private fun setData() {
-        favoriteViewModel.getUser().observe(this){
-            if (it != null){
-                setLoading()
-                listFavorite = it
-                adapter.setListUsers(it)
-            }
-        }
-
-        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-            override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
-            ): Boolean = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                listFavorite[viewHolder.adapterPosition].username?.let { favoriteViewModel.deleteUser(it)}
-                }
-
-        }
-        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(binding.rvFavorite)
-    }
-
-    private fun initializationAdapter(){
+        val manager = LinearLayoutManager(this)
+        binding.rvFavorite.layoutManager = manager
         binding.rvFavorite.setHasFixedSize(true)
-        binding.rvFavorite.layoutManager = LinearLayoutManager(this)
-        adapter = FavoriteAdapter()
-        binding.rvFavorite.adapter = adapter
+
+        favoriteViewModel.getUser().observe(this){
+            setUserData(it)
+        }
     }
 
-    private fun setLoading(){
-        binding.rvLoad.visibility = View.GONE
-        binding.rvFavorite.visibility = View.VISIBLE
+    @SuppressLint("SetTextI18n")
+    private fun setUserData(listUser : List<UserGithub>){
+        val userGithub = ArrayList<Users>()
+        listUser.map {
+            val user = Users(username = it.username.toString(), avatarUrl = it.avatarUrl.toString(), followersUrl = it.followersUrl.toString(), followingUrl = it.followingUrl.toString())
+            userGithub.add(user)
+        }
+        if (userGithub.isNotEmpty()){
+            val adapter = UserAdapter(userGithub)
+            binding.rvFavorite.adapter = adapter
+        }else {
+            val adapter = UserAdapter(userGithub)
+            binding.rvFavorite.adapter = adapter
+        }
     }
 
 }

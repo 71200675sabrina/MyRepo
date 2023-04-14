@@ -11,6 +11,11 @@ class FavoriteViewModel(application: Application): ViewModel() {
     private val userRepository: UserRepository = UserRepository(application)
 
     fun getUser(): LiveData<List<UserGithub>> = userRepository.getAllFavoriteData()
+
+    fun insertUser(user: UserGithub){
+        userRepository.insert(user)
+    }
+
     fun deleteUser(username: String){
         userRepository.delete(username)
     }

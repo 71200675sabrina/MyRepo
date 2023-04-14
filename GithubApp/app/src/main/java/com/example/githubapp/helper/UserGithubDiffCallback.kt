@@ -16,6 +16,6 @@ class UserGithubDiffCallback (
         val oldUser = oldList[oldItemPosition]
         val newUser = newList[newItemPosition]
 
-        return oldUser.name == newUser.name && oldUser.username == newUser.username
+        return oldUser.username == newUser.username && oldUser.id == newUser.id
     }
 }

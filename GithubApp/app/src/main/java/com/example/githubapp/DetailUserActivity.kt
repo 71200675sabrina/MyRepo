@@ -27,7 +27,6 @@ class DetailUserActivity : AppCompatActivity() {
 
     companion object{
         const val USER_KEY = "key_data"
-        const val Extra_USER = "extra_USER"
 
         @StringRes
         private val TAB_TITLES = intArrayOf(
@@ -93,16 +92,17 @@ class DetailUserActivity : AppCompatActivity() {
 
         binding.btnFav?.setOnClickListener {
             val userRoom = UserGithub(Data.login, Data.name, Data.avatarUrl, Data.followingUrl, Data.followersUrl)
-            val existingUser = viewModel.checkData(Data.login)
-            if (existingUser == null ){
-                viewModel.insertData(userRoom)
-                Toast.makeText(this, "User Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
-                (binding.btnFav as ImageButton). setImageResource(R.drawable.td_favorite)
-            } else {
-                viewModel.deleteData(Data.login)
+            val btnFav = binding.btnFav
+            if (btnFav is ImageButton && btnFav.drawable.constantState == ContextCompat.getDrawable(this, R.drawable.td_favorite)?.constantState){
+                btnFav.setImageResource(R.drawable.favorite_border)
+                favoriteViewModel.deleteUser(Data.login)
                 Toast.makeText(this, "User Dihapus dari Favorite", Toast.LENGTH_SHORT).show()
-                (binding.btnFav as ImageButton). setImageResource(R.drawable.favorite_border)
+            } else {
+                btnFav?.setImageResource(R.drawable.td_favorite)
+                favoriteViewModel.insertUser(userRoom)
+                Toast.makeText(this, "User Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
             }
+
         }
     }
     private fun showLoading(isLoading: Boolean){
