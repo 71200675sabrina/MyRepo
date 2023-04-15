@@ -12,7 +12,7 @@ interface UserDao {
     fun insert(user: UserGithub)
 
     @Query("DELETE FROM user WHERE username = :username")
-    fun delete(username: String)
+    fun delete(user: UserGithub)
 
     @Query("SELECT * from user ORDER BY id ASC")
     fun getAllFavoriteData(): LiveData<List<UserGithub>>

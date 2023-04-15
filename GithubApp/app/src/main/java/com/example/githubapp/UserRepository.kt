@@ -23,8 +23,8 @@ class UserRepository(application: Application) {
         executorService.execute { userDao.insert(user) }
     }
 
-    fun delete(username: String){
-        executorService.execute { userDao.delete(username) }
+    fun delete(user: UserGithub){
+        executorService.execute { userDao.delete(user) }
     }
 
     fun getDataByUsername(username: String): LiveData<UserGithub> = userDao.getDataByUsername(username)

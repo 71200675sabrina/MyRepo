@@ -2,7 +2,6 @@ package com.example.githubapp
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -16,13 +15,13 @@ import com.example.githubapp.databinding.UserDetailBinding
 import com.example.githubapp.favorite.FavoriteViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.example.githubapp.database.UserDao
 
 
 class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: UserDetailBinding
     private lateinit var viewModel: DetailViewModel
+
     private val favoriteViewModel by viewModels<FavoriteViewModel>() { ViewModelFactory.getInstance(application) }
 
     companion object{
@@ -79,6 +78,9 @@ class DetailUserActivity : AppCompatActivity() {
             showLoading(it)
         }
 
+        
+
+
     }
 
     private fun setDetailUser(Data: DetailUserResponse) {
@@ -90,21 +92,10 @@ class DetailUserActivity : AppCompatActivity() {
         binding.tvFollowers.text = Data.followers.toString()
         binding.tvFollowing.text = Data.following.toString()
 
-        binding.btnFav?.setOnClickListener {
-            val userRoom = UserGithub(Data.login, Data.name, Data.avatarUrl, Data.followingUrl, Data.followersUrl)
-            val btnFav = binding.btnFav
-            if (btnFav is ImageButton && btnFav.drawable.constantState == ContextCompat.getDrawable(this, R.drawable.td_favorite)?.constantState){
-                btnFav.setImageResource(R.drawable.favorite_border)
-                favoriteViewModel.deleteUser(Data.login)
-                Toast.makeText(this, "User Dihapus dari Favorite", Toast.LENGTH_SHORT).show()
-            } else {
-                btnFav?.setImageResource(R.drawable.td_favorite)
-                favoriteViewModel.insertUser(userRoom)
-                Toast.makeText(this, "User Ditambahkan ke Favorite", Toast.LENGTH_SHORT).show()
-            }
-
-        }
     }
+
+
+
     private fun showLoading(isLoading: Boolean){
         if (isLoading) {
             binding.progressBar.visibility = View.VISIBLE

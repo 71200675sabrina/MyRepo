@@ -2,6 +2,7 @@ package com.example.githubapp.favorite
 
 import android.content.Intent
 import android.os.Bundle
+import android.provider.ContactsContract.Data
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.githubapp.database.UserGithub
@@ -29,7 +30,7 @@ class FavoriteActivity : AppCompatActivity() {
         adapter.setOnItemClickCallback(object : FavoriteAdapter.OnItemClickCallback{
             override fun onItemClicked(data: UserGithub) {
                 val intent = Intent(this@FavoriteActivity, DetailUserActivity::class.java)
-                intent.putExtra(DetailUserActivity.USER_KEY,data)
+                intent.putExtra(DetailUserActivity.USER_KEY,data.username)
                 startActivity(intent)
             }
         })
