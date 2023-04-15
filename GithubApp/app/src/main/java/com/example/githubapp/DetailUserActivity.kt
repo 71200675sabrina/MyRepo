@@ -78,7 +78,13 @@ class DetailUserActivity : AppCompatActivity() {
             showLoading(it)
         }
 
-        
+        favoriteViewModel.getUserByUsername(username.toString()).observe(this){ favoriteList->
+            if (favoriteList == null){
+                binding.btnFav?.setImageResource(R.drawable.favorite_border)
+            }else{
+                binding.btnFav?.setImageResource(R.drawable.td_favorite)
+            }
+        }
 
 
     }
@@ -91,6 +97,24 @@ class DetailUserActivity : AppCompatActivity() {
         binding.tvUsername.text = Data.name
         binding.tvFollowers.text = Data.followers.toString()
         binding.tvFollowing.text = Data.following.toString()
+
+        binding.btnFav?.setOnClickListener {
+            val userRoom = UserGithub(Data.login, Data.name, Data.avatarUrl, Data.followingUrl, Data.followersUrl)
+            val btnFav = binding.btnFav
+
+            favoriteViewModel.getUserByUsername(userRoom.username.toString()).observe(this, {user->
+                if(user != null){
+                    btnFav?.setImageResource(R.drawable.td_favorite)
+                    favoriteViewModel.deleteUser(user)
+                    Toast.makeText(this, "User Dihapus dari Favorite", Toast.LENGTH_SHORT).show()
+                }else {
+                    btnFav?.setImageResource(R.drawable.favorite_border)
+                    favoriteViewModel.insertUser(userRoom)
+                    Toast.makeText(this, "User Ditambahkan Ke Favorite", Toast.LENGTH_SHORT).show()
+                }
+            })
+
+        }
 
     }
 
