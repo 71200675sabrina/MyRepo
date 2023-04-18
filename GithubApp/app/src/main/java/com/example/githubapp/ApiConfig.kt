@@ -1,5 +1,7 @@
 package com.example.githubapp
 
+
+import androidx.viewbinding.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,12 +19,13 @@ class ApiConfig {
             val authInterceptor = Interceptor { chain ->
                 val req = chain.request()
                 val requestHeaders = req.newBuilder()
-                    .addHeader("Authorization", "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")
+                    .addHeader("Authorization", "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")
                     .build()
                 chain.proceed(requestHeaders)
             }
             val client = OkHttpClient.Builder()
                 .addInterceptor(authInterceptor)
+                .addInterceptor(loggingInterceptor)
                 .build()
             val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.github.com/")

@@ -2,21 +2,20 @@ package com.example.githubapp.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
 interface UserDao {
+    @Query("SELECT * FROM favorite_user WHERE isfavorite = 1")
+    fun getFavoriteUser() : LiveData<List<FavoriteUser>>
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(user: UserGithub)
+    fun insertFavorite(user: FavoriteUser)
 
-    @Query("DELETE FROM user WHERE username = :username")
-    fun delete(user: UserGithub)
+    @Delete
+    fun deleteFavorite(user: FavoriteUser)
 
-    @Query("SELECT * from user ORDER BY id ASC")
-    fun getAllFavoriteData(): LiveData<List<UserGithub>>
-
-    @Query("SELECT * FROM user WHERE username = :username")
-    fun getDataByUsername(username: String): LiveData<UserGithub>
 }

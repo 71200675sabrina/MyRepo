@@ -10,19 +10,17 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.example.githubapp.database.UserGithub
+import com.example.githubapp.database.FavoriteUser
 import com.example.githubapp.databinding.UserDetailBinding
 import com.example.githubapp.favorite.FavoriteViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 
-
 class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: UserDetailBinding
     private lateinit var viewModel: DetailViewModel
-
-    private val favoriteViewModel by viewModels<FavoriteViewModel>() { ViewModelFactory.getInstance(application) }
+    private val favoriteViewModel by viewModels<FavoriteViewModel> (){ ViewModelFactory.getInstance(application) }
 
     companion object{
         const val USER_KEY = "key_data"
@@ -34,18 +32,17 @@ class DetailUserActivity : AppCompatActivity() {
         )
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = UserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        viewModel = ViewModelProvider(this).get(DetailViewModel::class.java)
 
         val username = intent.getStringExtra(USER_KEY)
         val bundle = Bundle()
         bundle.putString(USER_KEY, username)
 
+        viewModel = ViewModelProvider(this, ViewModelProvider.NewInstanceFactory()).get(DetailViewModel::class.java)
 
         val loginUser = intent.getStringExtra(USER_KEY)
         binding.tvName.text = loginUser
@@ -78,15 +75,17 @@ class DetailUserActivity : AppCompatActivity() {
             showLoading(it)
         }
 
-        favoriteViewModel.getUserByUsername(username.toString()).observe(this){ favoriteList->
-            if (favoriteList == null){
-                binding.btnFav?.setImageResource(R.drawable.favorite_border)
+
+    }
+
+    private fun setIconFavorite(isfavorite: Boolean){
+        binding.fbFavorite?.apply {
+            if (isfavorite) {
+                setImageDrawable(ContextCompat.getDrawable(this@DetailUserActivity, R.drawable.full_favorite))
             }else{
-                binding.btnFav?.setImageResource(R.drawable.td_favorite)
+                setImageDrawable(ContextCompat.getDrawable(this@DetailUserActivity, R.drawable.favorite_border))
             }
         }
-
-
     }
 
     private fun setDetailUser(Data: DetailUserResponse) {
@@ -98,27 +97,34 @@ class DetailUserActivity : AppCompatActivity() {
         binding.tvFollowers.text = Data.followers.toString()
         binding.tvFollowing.text = Data.following.toString()
 
-        binding.btnFav?.setOnClickListener {
-            val userRoom = UserGithub(Data.login, Data.name, Data.avatarUrl, Data.followingUrl, Data.followersUrl)
-            val btnFav = binding.btnFav
+        favoriteViewModel.getFavoriteUser().observe(this) {favoriteList ->
+            val isfavorite = favoriteList.any { it.username == Data.name }
 
-            favoriteViewModel.getUserByUsername(userRoom.username.toString()).observe(this, {user->
-                if(user != null){
-                    btnFav?.setImageResource(R.drawable.td_favorite)
-                    favoriteViewModel.deleteUser(user)
-                    Toast.makeText(this, "User Dihapus dari Favorite", Toast.LENGTH_SHORT).show()
-                }else {
-                    btnFav?.setImageResource(R.drawable.favorite_border)
-                    favoriteViewModel.insertUser(userRoom)
-                    Toast.makeText(this, "User Ditambahkan Ke Favorite", Toast.LENGTH_SHORT).show()
+            setIconFavorite(isfavorite)
+
+            binding.fbFavorite?.setOnClickListener{
+                val favoriteCondition = Data.name?.let { FavoriteUser(it, Data.name,
+                    avatarUrl = Data.avatarUrl,
+                    followingUrl = Data.followingUrl,
+                    followersUrl = Data.followersUrl, false) }
+
+                try {
+                    if (favoriteCondition != null ) favoriteViewModel.AddDelUser(favoriteCondition,favoriteList.any { it.id == Data.name })
+                } catch (e: Exception){
+                    Toast.makeText(this, e.toString(), Toast.LENGTH_SHORT).show()
                 }
-            })
+
+                if (isfavorite){
+                    Toast.makeText(this, "User di hapus dari favorite", Toast.LENGTH_SHORT).show()
+                    setIconFavorite(isfavorite)
+                }else{
+                    Toast.makeText(this, "User ditambahkan ke favorite", Toast.LENGTH_SHORT).show()
+                    setIconFavorite(isfavorite)
+                }
+            }
 
         }
-
     }
-
-
 
     private fun showLoading(isLoading: Boolean){
         if (isLoading) {
@@ -127,6 +133,7 @@ class DetailUserActivity : AppCompatActivity() {
             binding.progressBar.visibility = View.GONE
         }
     }
+
 
 }
 

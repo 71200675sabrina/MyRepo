@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubapp.databinding.ActivityMainBinding
 import com.example.githubapp.favorite.FavoriteActivity
+import com.example.githubapp.theme.SwitchMainActivity
 
 
 class MainActivity : AppCompatActivity() {
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity() {
         val itemDecoration = DividerItemDecoration(this, layoutManager.orientation)
         binding.rvUser.addItemDecoration(itemDecoration)
 
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -72,21 +74,18 @@ class MainActivity : AppCompatActivity() {
             }
         })
         return true
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-         when (item.itemId){
-            R.id.it_favorite -> {
-                val intent = Intent (this, FavoriteActivity::class.java)
-                startActivity(intent)
-                return true
+        when(item.itemId){
+            R.id.it_favorite -> {val intent = Intent(this, FavoriteActivity::class.java)
+            startActivity(intent)
             }
+            R.id.it_dark_mode ->{val intent = Intent(this, SwitchMainActivity::class.java)
+            startActivity(intent)}
         }
         return super.onOptionsItemSelected(item)
     }
-
-
 
 
     private fun setListData(listUser : List<ItemsItem>){
